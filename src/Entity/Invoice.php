@@ -13,7 +13,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *   attributes={
  *     "order": {"sentAt"="desc"}
  *   },
- *   normalizationContext={"groups"={"invoices_read"}}
+ *   normalizationContext={"groups"={"invoices_read"}},
+ *   subresourceOperations={
+ *     "api_customers_invoices_get_subresource"={
+ *        "normalization_context"={
+ *          "groups"={"invoices_subresource"}
+ *       }
+ *     }
+ *   },
+ *   itemOperations={
+ *     "GET",
+ *     "PUT",
+ *     "DELETE",
+ *     "increment"={
+ *     "method"="post",
+ *     "path"="/invoices/{id}/increment",
+ *     "controller"="App\Controller\InvoiceIncrementationController",
+ *     "swagger_context"={
+ *         "summary"="Incrémente une facture",
+ *         "description"="Incrémente le chrono d'une facture donnée"
+ *       }
+ *     }
+ *   }
  * )
  * @ApiFilter(
  *     OrderFilter::class,
@@ -27,13 +48,13 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read"})
+     * @Groups({"customers_read", "invoices_subresource"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"invoices_read", "customers_read"})
+     * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
      */
     private $amount;
 
