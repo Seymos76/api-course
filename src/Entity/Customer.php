@@ -23,7 +23,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  * )
  * @ApiFilter(
  *     OrderFilter::class,
- *     properties={"lastName","invoices.amount"}
+ *     properties={"lastName"}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  */
