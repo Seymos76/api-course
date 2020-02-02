@@ -7,6 +7,9 @@ api_platform:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
         json: ['application/merge-patch+json']
+    enable_swagger: true
+    enable_swagger_ui: true
+    enable_re_doc: true
     swagger:
         versions: [3]
     collection:
@@ -18,3 +21,4 @@ api_platform:
             client_items_per_page: true
             page_parameter_name: 'page'
             items_per_page_parameter_name: 'count'
+    enable_profiler: true
