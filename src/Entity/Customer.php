@@ -2,11 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
+ * @ApiResource(
+ *   attributes={
+ *     "pagination_enabled"=true,
+ *     "pagination_items_per_page"=5
+ *   }
+ * )
+ * @ApiFilter(
+ *     SearchFilter::class,
+ *     properties={"firstName"="partial","lastName","company"}
+ * )
+ * @ApiFilter(
+ *     OrderFilter::class,
+ *     properties={"lastName","invoices.amount"}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  */
 class Customer
