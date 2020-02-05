@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "path"="/clients"
  *       }
  *   },
- *   itemOperations={"get"},
+ *   itemOperations={"get","post","delete","put","patch"},
  *     subresourceOperations={
  *       "invoices_get_subresource"={
  *         "path"="/clients/{id}/factures"
