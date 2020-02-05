@@ -23,14 +23,13 @@ class PasswordEncoderSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::VIEW => [['encodePassword' => EventPriorities::PRE_WRITE]],
+            KernelEvents::VIEW => ['encodePassword', EventPriorities::PRE_WRITE],
         ];
     }
 
     public function encodePassword(ViewEvent $event): void
     {
         $result = $event->getControllerResult();
-        dump($result);
         $method = $event->getRequest()->getMethod();
         if ($result instanceof User && $method === "POST") {
             $hash = $this->encoder->encodePassword($result, $result->getPassword());
