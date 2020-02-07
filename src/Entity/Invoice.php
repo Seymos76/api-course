@@ -12,7 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  *   attributes={
- *     "order": {"sentAt"="desc"}
+ *     "order": {"sentAt"="desc"},
+ *     "pagination_enabled"=false,
  *   },
  *   normalizationContext={"groups"={"invoices_read"}},
  *   denormalizationContext={"disable_type_enforcement"=true},
@@ -28,10 +29,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "PUT",
  *     "DELETE",
  *     "increment"={
- *     "method"="post",
- *     "path"="/invoices/{id}/increment",
- *     "controller"="App\Controller\InvoiceIncrementationController",
- *     "swagger_context"={
+ *       "method"="post",
+ *       "path"="/invoices/{id}/increment",
+ *       "controller"="App\Controller\InvoiceIncrementationController",
+ *       "swagger_context"={
  *         "summary"="Incrémente une facture",
  *         "description"="Incrémente le chrono d'une facture donnée"
  *       }
@@ -50,7 +51,7 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read", "invoices_subresource"})
+     * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
      */
     private $id;
 

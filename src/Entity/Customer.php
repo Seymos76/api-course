@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *   attributes={
  *     "pagination_enabled"=true,
- *     "pagination_items_per_page"=5
+ *     "pagination_items_per_page"=10
  *   },
  *   normalizationContext={
  *       "groups"={"customers_read"}
@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "path"="/clients"
  *       }
  *   },
- *   itemOperations={"get"},
+ *   itemOperations={"get","put","delete"},
  *     subresourceOperations={
  *       "invoices_get_subresource"={
  *         "path"="/clients/{id}/factures"
