@@ -4,6 +4,7 @@ import Select from "../components/forms/Select";
 import {NavLink} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import axios from "axios";
+import invoicesAPI from "../services/invoicesAPI";
 
 const InvoicePage = ({ history, match }) => {
 
@@ -30,23 +31,22 @@ const InvoicePage = ({ history, match }) => {
 
 			if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
 		} catch (e) {
-			console.log(e.response);
+			// flash notification
+			history.replace("/invoices");
 		}
 	};
 
 	const fetchInvoice = async id => {
 		try {
-			const data = await axios.get("http://localhost:8000/api/invoices/" + id)
-				.then(response => response.data);
-			console.log(data);
-			const { amount, status, customer } = data;
+			const { amount, status, customer } = await invoicesAPI.find(id);
 			// console.log('amount:',amount);
 			// console.log('status:',status);
 			// console.log('customer:',customer);
 			// console.log('customer id:',customer.id);
 			setInvoice({ amount, status, customer: customer.id });
 		} catch (e) {
-			console.log(e.response);
+			// flash notification
+			history.replace("/invoices");
 		}
 	};
 
@@ -72,16 +72,10 @@ const InvoicePage = ({ history, match }) => {
 		event.preventDefault();
 		try {
 			if (editing) {
-				const data = await axios.put(
-					"http://localhost:8000/api/invoices/"+id,
-					{...invoice, customer: `/api/customers/${invoice.customer}`}
-				);
+				await invoicesAPI.update(id, invoice);
 				// flash notification
 			} else {
-				const data = await axios.post(
-					"http://localhost:8000/api/invoices",
-					{...invoice, customer: `/api/customers/${invoice.customer}`}
-				);
+				await invoicesAPI.create(invoice);
 				// flash notification
 				history.replace("/invoices");
 			}
