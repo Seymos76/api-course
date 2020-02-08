@@ -5,7 +5,10 @@ import {NavLink} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import axios from "axios";
 
-const InvoicePage = ({ history }) => {
+const InvoicePage = ({ history, match }) => {
+
+	const { id = "new" } = match.params;
+
 	const [invoice, setInvoice] = useState({
 		amount: "",
 		customer: "",
@@ -13,7 +16,7 @@ const InvoicePage = ({ history }) => {
 	});
 
 	const [customers, setCustomers] = useState([]);
-
+	const [editing, setEditing] = useState(false);
 	const [errors, setErrors] = useState({
 		amount: "",
 		customer: "",
@@ -31,10 +34,34 @@ const InvoicePage = ({ history }) => {
 		}
 	};
 
+	const fetchInvoice = async id => {
+		try {
+			const data = await axios.get("http://localhost:8000/api/invoices/" + id)
+				.then(response => response.data);
+			console.log(data);
+			const { amount, status, customer } = data;
+			// console.log('amount:',amount);
+			// console.log('status:',status);
+			// console.log('customer:',customer);
+			// console.log('customer id:',customer.id);
+			setInvoice({ amount, status, customer: customer.id });
+		} catch (e) {
+			console.log(e.response);
+		}
+	};
+
 	// executed at component start because depends on none variable
 	useEffect(() => {
 		fetchCustomers();
 	}, []);
+
+	// executed at component start because depends on none variable
+	useEffect(() => {
+		if (id !== "new") {
+			setEditing(true);
+			fetchInvoice(id);
+		}
+	}, [id]);
 
 	const handleChange = ({currentTarget}) => {
 		const { name, value } = currentTarget;
@@ -44,12 +71,21 @@ const InvoicePage = ({ history }) => {
 	const handleSubmit = async event => {
 		event.preventDefault();
 		try {
-			const data = await axios.post(
-				"http://localhost:8000/api/invoices",
-				{...invoice, customer: `/api/customers/${invoice.customer}`}
-			);
-			// flash notification
-			history.replace("/invoices");
+			if (editing) {
+				const data = await axios.put(
+					"http://localhost:8000/api/invoices/"+id,
+					{...invoice, customer: `/api/customers/${invoice.customer}`}
+				);
+				// flash notification
+			} else {
+				const data = await axios.post(
+					"http://localhost:8000/api/invoices",
+					{...invoice, customer: `/api/customers/${invoice.customer}`}
+				);
+				// flash notification
+				history.replace("/invoices");
+			}
+
 		} catch ({ response }) {
 			const { violations } = response.data;
 			if (violations) {
@@ -65,7 +101,7 @@ const InvoicePage = ({ history }) => {
 
 	return (
 		<>
-			<h1>Création d'une facture</h1>
+			<h1>{editing && "Modification de la facture" || "Création d'une facture"}</h1>
 			<form onSubmit={handleSubmit}>
 				<Field
 					name="amount"
