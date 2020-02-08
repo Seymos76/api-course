@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NavLink } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 import axios from "axios";
@@ -56,7 +57,10 @@ const CustomersPage = (props) => {
 
 	return (
 		<>
-			<h1>Liste des clients</h1>
+			<div className="mb-3 d-flex justify-content-between align-items-center">
+				<h1>Liste des clients</h1>
+				<NavLink to="/customers/new" className="btn btn-primary">Ajouter un client</NavLink>
+			</div>
 
 			<div className="form-group">
 				<input onChange={handleSearch} value={search} type="search" className="form-control" placeholder="Rechercher..."/>
@@ -77,7 +81,7 @@ const CustomersPage = (props) => {
 				<tbody>
 				{paginatedCustomers.map(customer => <tr key={customer.id}>
 					<td>{customer.id}</td>
-					<td><a href="#">{customer.firstName} {customer.lastName}</a></td>
+					<td><NavLink to={`/customers/${customer.id}`}>{customer.firstName} {customer.lastName}</NavLink></td>
 					<td>{customer.email}</td>
 					<td>{customer.company}</td>
 					<td className="text-center">

@@ -3,6 +3,7 @@ import moment from "moment"
 import Pagination from "../components/Pagination";
 import InvoicesAPI from "../services/invoicesAPI";
 import axios from "axios";
+import {NavLink} from "react-router-dom";
 
 const STATUS_CLASSES = {
 	PAIED: "primary",
@@ -24,7 +25,6 @@ const InvoicesPage = (props) => {
 	const fetchInvoices = async () => {
 		try {
 			const data = await InvoicesAPI.findAll();
-			console.log('fetched:',data);
 			setInvoices(data);
 		} catch (e) {
 			console.log('error fetching invoices:',e.response);
@@ -76,7 +76,10 @@ const InvoicesPage = (props) => {
 
 	return (
 		<>
-			<h1>Liste des factures</h1>
+			<div className="mb-3 d-flex justify-content-between align-items-center">
+				<h1>Liste des factures</h1>
+				<NavLink to="/invoices/new" className="btn btn-primary">Ajouter une facture</NavLink>
+			</div>
 
 			<div className="form-group">
 				<input onChange={handleSearch} value={search} type="search" className="form-control" placeholder="Rechercher..."/>
@@ -97,7 +100,7 @@ const InvoicesPage = (props) => {
 				{paginatedInvoices.map(invoice => <tr key={invoice.id}>
 					<td>{invoice.chrono}</td>
 					<td>
-						<a href="">{invoice.customer.firstName} {invoice.customer.lastName}</a>
+						<NavLink to={`/invoices/${invoice.id}`}>{invoice.customer.firstName} {invoice.customer.lastName}</NavLink>
 					</td>
 					<td className="text-center">{formatDate(invoice.sentAt)}</td>
 					<td className="text-center">
@@ -105,7 +108,7 @@ const InvoicesPage = (props) => {
 					</td>
 					<td className="text-center">{invoice.amount.toLocaleString()} €</td>
 					<td>
-						<button onClick={() => handleUpdate(invoice.id)} className="btn btn-sm btn-primary mr-1">Editer</button>
+						<NavLink to={`/invoices/${invoice.id}`} className="btn btn-sm btn-primary mr-1">Editer</NavLink>
 						<button onClick={() => handleDelete(invoice.id)} className="btn btn-sm btn-danger">Supprimer</button>
 					</td>
 				</tr>)}

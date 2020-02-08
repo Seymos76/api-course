@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   normalizationContext={
  *       "groups"={"customers_read"}
  *   },
+ *   collectionOperations={"get","post"},
  *   itemOperations={"get","put","delete"},
  *     subresourceOperations={
  *       "invoices_get_subresource"={

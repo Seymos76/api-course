@@ -6,5 +6,5 @@ function findAll() {
 }
 
 export default {
-	findAll
+	findAll,
 }
