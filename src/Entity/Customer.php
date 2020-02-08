@@ -22,18 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   normalizationContext={
  *       "groups"={"customers_read"}
  *   },
- *   collectionOperations={
- *       "get"={
- *         "path"="/clients"
- *       },
- *       "post"={
- *         "path"="/clients"
- *       }
- *   },
  *   itemOperations={"get","put","delete"},
  *     subresourceOperations={
  *       "invoices_get_subresource"={
- *         "path"="/clients/{id}/factures"
+ *         "path"="/customers/{id}/factures"
  *     }
  *   }
  * )
