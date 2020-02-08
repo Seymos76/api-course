@@ -50,10 +50,17 @@ const InvoicePage = ({ history }) => {
 			);
 			// flash notification
 			history.replace("/invoices");
-		} catch (e) {
-			console.log(e.response);
+		} catch ({ response }) {
+			const { violations } = response.data;
+			if (violations) {
+				const apiErrors = [];
+				violations.forEach(({propertyPath, message}) => {
+					apiErrors[propertyPath] = message;
+				});
+				setErrors(apiErrors);
+				// flash notification
+			}
 		}
-		console.log(invoice);
 	};
 
 	return (
