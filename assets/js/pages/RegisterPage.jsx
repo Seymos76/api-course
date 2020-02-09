@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom";
 import usersAPI from "../services/usersAPI";
 import {toast} from "react-toastify";
 
-const RegisterPage = () => {
+const RegisterPage = ({ history }) => {
 
 	const [user, setUser] = useState({
 		firstName: "",
