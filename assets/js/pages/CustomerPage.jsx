@@ -32,7 +32,7 @@ const CustomerPage = ({ match, history}) => {
 			const { firstName, lastName, email, company } = await customersAPI.findOne(id);
 			setCustomer({ firstName, lastName, email, company });
 		} catch (e) {
-			toast.error("Une erreur est survenue lors de la récupération de cette facture...");
+			toast.error("Une erreur est survenue lors de la récupération de ce client...");
 			// flash notification
 			history.replace("/customers");
 		}
