@@ -59,6 +59,7 @@ const InvoicePage = ({ history, match }) => {
 	useEffect(() => {
 		if (id !== "new") {
 			setEditing(true);
+			// issue with autofilling fields on editing mode
 			fetchInvoice(id);
 		}
 	}, [id]);
