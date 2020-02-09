@@ -51,7 +51,7 @@ const LoginPage = ({ history }) => {
 					onChange={handleChange}
 					error={""}
 				/>
-				<button type="submit">Connexion</button>
+				<button type="submit" className="btn btn-primary">Connexion</button>
 			</form>
 		</>
 	);
