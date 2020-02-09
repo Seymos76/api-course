@@ -7,8 +7,8 @@ const FormContentLoader = props => {
 			height={500}
 			width={800}
 			speed={2}
-			primaryColor="#f3f3f3"
-			secondaryColor="#ecebeb"
+			// primaryColor="#f3f3f3"
+			// secondaryColor="#ecebeb"
 			{...props}
 		>
 			<rect x="0" y="10" rx="0" ry="0" width="151" height="15" />
