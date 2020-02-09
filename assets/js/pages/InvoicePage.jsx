@@ -35,6 +35,7 @@ const InvoicePage = ({ history, match }) => {
 			if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
 		} catch (e) {
 			// flash notification
+			toast.error("Une erreur est survenue lors de la récupération des clients.");
 			history.replace("/invoices");
 		}
 	};
