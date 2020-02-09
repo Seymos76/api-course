@@ -3,18 +3,22 @@ import { NavLink } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/customersAPI";
 import axios from "axios";
+import {toast} from "react-toastify";
+import TableLoader from "../loaders/TableLoader";
 
 const CustomersPage = (props) => {
 	const [customers, setCustomers] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [search, setSearch] = useState('');
+	const [loading, setLoading] = useState(true);
 
 	const fetchCustomers = async () => {
 		try {
 			const data = await CustomersAPI.findAll();
 			setCustomers(data);
+			setLoading(false);
 		} catch (error) {
-			console.log(error.response);
+			toast.error("Une erreur est survenue lors de la récupération de vos clients...");
 		}
 	};
 
@@ -28,8 +32,10 @@ const CustomersPage = (props) => {
 		setCustomers(customers.filter(customer => customer.id !== id));
 		try {
 			await axios.delete(`http://localhost:8000/api/customers/${id}`);
+			toast.success("Client supprimé avec succès !");
 		} catch (e) {
-			setCustomers(originalCustomers)
+			setCustomers(originalCustomers);
+			toast.info("Le client n'a pas pu être supprimé.");
 		}
 	};
 
@@ -78,7 +84,7 @@ const CustomersPage = (props) => {
 					<th/>
 				</tr>
 				</thead>
-				<tbody>
+				{!loading && <tbody>
 				{paginatedCustomers.map(customer => <tr key={customer.id}>
 					<td>{customer.id}</td>
 					<td><NavLink to={`/customers/${customer.id}`}>{customer.firstName} {customer.lastName}</NavLink></td>
@@ -96,9 +102,9 @@ const CustomersPage = (props) => {
 						>Supprimer</button>
 					</td>
 				</tr>)}
-
-				</tbody>
+				</tbody>}
 			</table>
+			{loading && <TableLoader/>}
 			{itemsPerPage < filteredCustomers.length &&
 			<Pagination
 				currentPage={currentPage}

@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import Field from "../components/forms/Field";
 import {NavLink} from "react-router-dom";
 import usersAPI from "../services/usersAPI";
+import {toast} from "react-toastify";
 
 const RegisterPage = () => {
 
@@ -38,6 +39,7 @@ const RegisterPage = () => {
 		try {
 			await usersAPI.register(user);
 			// flash notification
+			toast.success("Vous êtes désormais inscrit, vous pouvez vous connecter.");
 			setErrors({});
 			history.replace("/login");
 		} catch (error) {
@@ -47,6 +49,7 @@ const RegisterPage = () => {
 					apiErrors[propertyPath] = message;
 				});
 				setErrors(apiErrors);
+				toast.warn("Des erreurs dans votre formulaire...");
 				// flash notification
 			}
 		}

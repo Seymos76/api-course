@@ -4,6 +4,8 @@ import Pagination from "../components/Pagination";
 import InvoicesAPI from "../services/invoicesAPI";
 import axios from "axios";
 import {NavLink} from "react-router-dom";
+import {toast} from "react-toastify";
+import TableLoader from "../loaders/TableLoader";
 
 const STATUS_CLASSES = {
 	PAIED: "primary",
@@ -21,13 +23,15 @@ const InvoicesPage = (props) => {
 	const [invoices, setInvoices] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [search, setSearch] = useState('');
+	const [loading, setLoading] = useState(true);
 
 	const fetchInvoices = async () => {
 		try {
 			const data = await InvoicesAPI.findAll();
 			setInvoices(data);
+			setLoading(false);
 		} catch (e) {
-			console.log('error fetching invoices:',e.response);
+			toast.info("Une erreur est survenue lors de la récupération de vos factures...");
 		}
 	};
 
@@ -48,8 +52,10 @@ const InvoicesPage = (props) => {
 		setInvoices(invoices.filter(invoice => invoice.id !== id));
 		try {
 			await axios.delete("http://localhost:8000/api/invoices/"+id);
+			toast.success("Facture supprimée.");
 		} catch (e) {
 			setInvoices(originalInvoices);
+			toast.warn("La facture n'a pas pu être supprimée.");
 		}
 	};
 
@@ -96,11 +102,11 @@ const InvoicesPage = (props) => {
 					<th></th>
 				</tr>
 				</thead>
-				<tbody>
+				{!loading && <tbody>
 				{paginatedInvoices.map(invoice => <tr key={invoice.id}>
 					<td>{invoice.chrono}</td>
 					<td>
-						<NavLink to={`/invoices/${invoice.id}`}>{invoice.customer.firstName} {invoice.customer.lastName}</NavLink>
+						<NavLink to={`/customers/${invoice.customer.id}`}>{invoice.customer.firstName} {invoice.customer.lastName}</NavLink>
 					</td>
 					<td className="text-center">{formatDate(invoice.sentAt)}</td>
 					<td className="text-center">
@@ -112,8 +118,9 @@ const InvoicesPage = (props) => {
 						<button onClick={() => handleDelete(invoice.id)} className="btn btn-sm btn-danger">Supprimer</button>
 					</td>
 				</tr>)}
-				</tbody>
+				</tbody>}
 			</table>
+			{loading && <TableLoader/>}
 			<Pagination
 				currentPage={currentPage}
 				itemsPerPage={itemsPerPage}

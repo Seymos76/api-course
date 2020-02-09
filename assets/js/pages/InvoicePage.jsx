@@ -5,6 +5,8 @@ import {NavLink} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
 import axios from "axios";
 import invoicesAPI from "../services/invoicesAPI";
+import {toast} from "react-toastify";
+import FormContentLoader from "../loaders/FormContentLoader";
 
 const InvoicePage = ({ history, match }) => {
 
@@ -23,12 +25,13 @@ const InvoicePage = ({ history, match }) => {
 		customer: "",
 		status: ""
 	});
+	const [loading, setLoading] = useState(true);
 
 	const fetchCustomers = async () => {
 		try {
 			const data = await customersAPI.findAll();
 			setCustomers(data);
-
+			setLoading(false);
 			if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
 		} catch (e) {
 			// flash notification
@@ -44,6 +47,7 @@ const InvoicePage = ({ history, match }) => {
 			// console.log('customer:',customer);
 			// console.log('customer id:',customer.id);
 			setInvoice({ amount, status, customer: customer.id });
+			setLoading(false);
 		} catch (e) {
 			// flash notification
 			history.replace("/invoices");
@@ -75,9 +79,11 @@ const InvoicePage = ({ history, match }) => {
 			if (editing) {
 				await invoicesAPI.update(id, invoice);
 				// flash notification
+				toast.success("Facture mise à jour !");
 			} else {
 				await invoicesAPI.create(invoice);
 				// flash notification
+				toast.success("Facture enregistrée !");
 				history.replace("/invoices");
 			}
 
@@ -97,7 +103,8 @@ const InvoicePage = ({ history, match }) => {
 	return (
 		<>
 			<h1>{editing && "Modification de la facture" || "Création d'une facture"}</h1>
-			<form onSubmit={handleSubmit}>
+			{loading && <FormContentLoader/>}
+			{!loading && <form onSubmit={handleSubmit}>
 				<Field
 					name="amount"
 					type="number"
@@ -135,7 +142,7 @@ const InvoicePage = ({ history, match }) => {
 					<button type="submit" className="btn btn-success">Enregistrer</button>
 					<NavLink to="/invoices" className="btn btn-link">Retour aux factures</NavLink>
 				</div>
-			</form>
+			</form>}
 		</>
 	);
 };

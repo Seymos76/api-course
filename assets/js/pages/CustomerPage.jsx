@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Field from "../components/forms/Field";
 import {NavLink} from "react-router-dom";
 import customersAPI from "../services/customersAPI";
+import {toast} from "react-toastify";
+import FormContentLoader from "../loaders/FormContentLoader";
 
 const CustomerPage = ({ match, history}) => {
 
@@ -23,12 +25,14 @@ const CustomerPage = ({ match, history}) => {
 
 	const [editing, setEditing] = useState(false);
 
+	const [loading, setLoading] = useState(false);
+
 	const fetchCustomer = async id => {
 		try {
 			const { firstName, lastName, email, company } = await customersAPI.findOne(id);
 			setCustomer({ firstName, lastName, email, company });
 		} catch (e) {
-			console.log(e.response);
+			toast.error("Une erreur est survenue lors de la récupération de cette facture...");
 			// flash notification
 			history.replace("/customers");
 		}
@@ -37,8 +41,10 @@ const CustomerPage = ({ match, history}) => {
 	// load customer on component load or id changing
 	useEffect(() => {
 		if (id !== "new") {
+			setLoading(true);
 			setEditing(true);
 			fetchCustomer(id);
+			setLoading(false);
 		} else {
 			setEditing(false);
 		}
@@ -53,16 +59,18 @@ const CustomerPage = ({ match, history}) => {
 	const handleSubmit = async event => {
 		event.preventDefault();
 		try {
+			setErrors({});
 			if (editing) {
 				await customersAPI.update(id, customer);
 				// flash notification
+				toast.success("Client mis à jour !");
 				history.replace("/customers");
 			} else {
 				const response = await customersAPI.create(customer);
 				// flash notification
+				toast.success("Votre client a bien été enregistré !");
 				history.replace("/customers");
 			}
-			setErrors({});
 		} catch ({ response }) {
 			const { violations } = response.data;
 			if (violations) {
@@ -72,6 +80,7 @@ const CustomerPage = ({ match, history}) => {
 				});
 				setErrors(apiErrors);
 				// flash notification
+				toast.error("Des erreurs ont été détectées dans votre formulaire...");
 			}
 		}
 	};
@@ -79,7 +88,8 @@ const CustomerPage = ({ match, history}) => {
 	return (
 		<div>
 			{!editing && <h1>Création d'un client</h1> || <h1>Edition d'un client</h1>}
-			<form onSubmit={handleSubmit}>
+			{loading && <FormContentLoader/>}
+			{!loading && <form onSubmit={handleSubmit}>
 				<Field
 					name="lastName"
 					label="Nom de famille"
@@ -118,7 +128,7 @@ const CustomerPage = ({ match, history}) => {
 					<button type="submit" className="btn btn-success">Enregistrer</button>
 					<NavLink to="/customers" className="btn btn-link">Retour à la liste</NavLink>
 				</div>
-			</form>
+			</form>}
 		</div>
 	);
 };
